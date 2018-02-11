@@ -4,7 +4,12 @@ module V1
 
     def create
       @user = User.find_for_database_authentication(username: params[:username])
-      return invalid_email unless @user
+      unless @user
+        @user = User.new user_params
+        unless @user.save!
+          render json: { error: t('user_create_error') }
+        end
+      end
 
       if @user.valid_password?(params[:password])
         sign_in :user, @user
@@ -15,6 +20,11 @@ module V1
     end
 
     private
+
+      def user_params
+        params.permit(:username, :password)
+      end
+
 
       def invalid_email
         warden.custom_failure!
