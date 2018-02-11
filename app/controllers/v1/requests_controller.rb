@@ -1,6 +1,6 @@
 module V1
   class RequestsController < ApplicationController
-    before_action :set_request, only: [:show, :update, :destroy]
+    before_action :set_request, only: [:show, :update, :destroy, :accept]
 
     # GET /requests
     def index
@@ -38,6 +38,16 @@ module V1
     # DELETE /requests/1
     def destroy
       @request.destroy
+    end
+
+    def accept
+      @accepted_user = AcceptedUser.new(user: current_user, request: @request)
+
+      if @accepted_user.save!
+        render json: {"status": 200 }
+      else
+        render json: {"status": 400 }
+      end
     end
 
     private

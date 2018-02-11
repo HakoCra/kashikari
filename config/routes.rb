@@ -3,7 +3,11 @@ Rails.application.routes.draw do
 
   namespace :v1, defaults: { format: :json } do
     resources :beacons
-    resources :requests
+    resources :requests do
+      member do
+        post "accept"
+      end
+    end
     resources :messages do
       collection do
         get "talk/:username", to: "messages#talk"
