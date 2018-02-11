@@ -8,6 +8,7 @@ class User < ApplicationRecord
 
   has_one :beacon, dependent: :destroy
 
+  validates :username, presence: true
   validates :username, uniqueness: true
 
   def update_access_token!
