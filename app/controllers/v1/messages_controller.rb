@@ -14,12 +14,22 @@ module V1
       render json: @message
     end
 
+    # GET /messages/talk/:username
+    def talk
+      @user = User.where(username: params[:username])
+      @messages = Message.where(user: current_user, target: @user).
+                  or(Message.where(user: params[:username], target: @user))
+
+      render json: @messages
+    end
+
     # POST /messages
     def create
-      @message = Message.new(message_params)
+      target = User.find_by!(username: message_params[:target])
+      @message = Message.new(user: current_user, target: target, text: message_params[:text])
 
       if @message.save
-        render json: @message, status: :created, location: @message
+        render json: @message, serializer: V1::MessageSerializer, status: :created
       else
         render json: @message.errors, status: :unprocessable_entity
       end
@@ -47,7 +57,7 @@ module V1
 
       # Only allow a trusted parameter "white list" through.
       def message_params
-        params.require(:message).permit(:user_id, :target_id, :text)
+        params.permit(:target, :text)
       end
   end
 end
