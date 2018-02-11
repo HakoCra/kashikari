@@ -6,6 +6,12 @@ module V1
   end
 
   class UserSerializer < ActiveModel::Serializer
-    attributes :id, :username, :created_at
+    attributes :id, :username, :created_at, :latest_message
+
+    def latest_message
+      Message.where(user: object, target: current_user).
+        or(Message.where(user: current_user, user: object)).
+        last
+    end
   end
 end
