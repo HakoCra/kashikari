@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180210125806) do
+ActiveRecord::Schema.define(version: 20180211005539) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,16 @@ ActiveRecord::Schema.define(version: 20180210125806) do
     t.datetime "updated_at", null: false
     t.index ["major", "minor"], name: "index_beacons_on_major_and_minor", unique: true
     t.index ["user_id"], name: "index_beacons_on_user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "target_id", null: false
+    t.string "text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["target_id"], name: "index_messages_on_target_id"
+    t.index ["user_id"], name: "index_messages_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -43,4 +53,6 @@ ActiveRecord::Schema.define(version: 20180210125806) do
   end
 
   add_foreign_key "beacons", "users"
+  add_foreign_key "messages", "users"
+  add_foreign_key "messages", "users", column: "target_id"
 end
