@@ -15,6 +15,16 @@ ActiveRecord::Schema.define(version: 20180210125806) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "beacons", force: :cascade do |t|
+    t.bigint "user_id"
+    t.integer "major", null: false
+    t.integer "minor", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["major", "minor"], name: "index_beacons_on_major_and_minor", unique: true
+    t.index ["user_id"], name: "index_beacons_on_user_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -32,4 +42,5 @@ ActiveRecord::Schema.define(version: 20180210125806) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "beacons", "users"
 end

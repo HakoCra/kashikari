@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   after_create :update_access_token!
 
+  has_one :beacon, dependent: :destroy
+
   validates :username, uniqueness: true
 
   def update_access_token!
