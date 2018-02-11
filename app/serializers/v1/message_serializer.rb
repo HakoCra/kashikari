@@ -4,4 +4,8 @@ module V1
     has_one :user
     has_one :target
   end
+
+  class UserSerializer < ActiveModel::Serializer
+    attributes :id, :username, :created_at
+  end
 end
