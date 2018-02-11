@@ -6,7 +6,9 @@ module V1
       @user = User.find_for_database_authentication(username: params[:username])
       unless @user
         @user = User.new user_params
-        unless @user.save!
+        if @user.save!
+          create_beacon!(@user)
+        else
           render json: { error: t('user_create_error') }
         end
       end
@@ -25,6 +27,15 @@ module V1
         params.permit(:username, :password)
       end
 
+      def create_beacon!(user)
+        major = Random.rand(1000)
+        minor = Random.rand(1000)
+        while Beacon.exists?(major: major, minor: minor) do
+          major = Random.rand(1000)
+          minor = Random.rand(1000)
+        end
+        Beacon.create!(user: user, major: major, minor: minor)
+      end
 
       def invalid_email
         warden.custom_failure!
