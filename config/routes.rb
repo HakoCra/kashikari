@@ -1,9 +1,9 @@
 Rails.application.routes.draw do
-  resources :requests
   devise_for :users
 
   namespace :v1, defaults: { format: :json } do
     resources :beacons
+    resources :requests
     resources :messages do
       collection do
         get "talk/:username", to: "messages#talk"
