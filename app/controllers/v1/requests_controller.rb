@@ -17,9 +17,10 @@ module V1
     # POST /requests
     def create
       @request = Request.new(request_params)
+      @request.user = current_user
 
       if @request.save
-        render json: @request, status: :created, location: @request
+        render json: @request, status: :created
       else
         render json: @request.errors, status: :unprocessable_entity
       end
